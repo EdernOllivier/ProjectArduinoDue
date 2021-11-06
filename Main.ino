@@ -19,9 +19,9 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // Select which 'port' M1, M2, M3 or M4. In this case, M1
 Adafruit_DCMotor *myMotor = AFMS.getMotor(1);
 // You can also make another motor on port M2
-Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(2);
+//Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(2);
 // You can also make another stepper motor on port M3 and M4
-Adafruit_StepperMotor *myNextMotor = AFMS.getStepper(200, 2);
+//Adafruit_StepperMotor *myNextMotor = AFMS.getStepper(200, 2);
 
 int sensorPin1 = A1;    // select the input pin for the gyrometer // gyrometer wiper (middle terminal) connected to analog pin 1
 // outside leads to ground and +3.3V
@@ -212,7 +212,7 @@ void setup() {
   myMotor->run(FORWARD);
   // turn on motor
   myMotor->run(RELEASE);
-
+/*
   // Set the speed to start, from 0 (off) to 255 (max speed)
   myOtherMotor->setSpeed(150);
   myOtherMotor->run(FORWARD);
@@ -228,7 +228,7 @@ void setup() {
 
   //  Serial.begin(115200);
   Serial.println("Orientation Sensor Test"); Serial.println("");
-
+*/
   //  scanner.Init();
   /* Initialise the sensor */
 
@@ -243,6 +243,7 @@ void setup() {
 
   /* Display some basic information on this sensor */
   displaySensorDetails();
+//  displayCalStatus();
 
   /* Optional: Display current status */
   displaySensorStatus();
@@ -411,9 +412,15 @@ void loop() {
   */
   //  delay(200);
   ////////////////////////////////////////////////////////////////////////////////////////////
-  //#ifdef TRUE
+
+  // Set the speed to start, from 0 (off) to 255 (max speed)
+  myMotor->run(FORWARD);
+  myMotor->setSpeed(191);
+  // turn on motor
+//  myMotor->run(RELEASE);
+/*
+#ifdef TRUE
   // here the stab. has been done with the inclinometer
-  /*
     if (event.orientation.y > 0)
     {
       myMotor->run(BACKWARD);
@@ -440,9 +447,7 @@ void loop() {
       myOtherMotor->setSpeed(-1 *event.orientation.z *2);
     //    myNextMotor->step(4, BACKWARD, MICROSTEP);
     }
-  */
-  //#else
-  /*
+#else
     // here the stab. has been done with the gyrometer
     if (sensorValue1 > 0)
     {
@@ -454,9 +459,9 @@ void loop() {
       myMotor->run(BACKWARD);
       myMotor->setSpeed(-1 *sensorValue1);
     }
-    #endif
-  */
-  //#ifdef TRUE
+#endif
+*/
+//#ifdef TRUE
   /*
     Serial.println("Single coil steps");
     myNextMotor->step(100, FORWARD, SINGLE);
