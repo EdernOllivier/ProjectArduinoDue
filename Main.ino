@@ -7,21 +7,27 @@
   ---->	http://www.adafruit.com/products/1438
 */
 //#include "I2CScanner.h"
-#include <Wire.h>
-#include <Adafruit_MotorShield.h>
+//#include <Wire.h>
+//#include <Adafruit_MotorShield.h>
 #define Wire Wire1
 //I2CScanner scanner;
 // Create the motor shield object with the default I2C address
-Adafruit_MotorShield AFMS = Adafruit_MotorShield();
+//Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // Or, create it with a different I2C address (say for stacking)
 // Adafruit_MotorShield AFMS = Adafruit_MotorShield(0x61);
 
 // Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor *myMotor = AFMS.getMotor(1);
+//Adafruit_DCMotor *myMotor = AFMS.getMotor(1);
 // You can also make another motor on port M2
 //Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(2);
 // You can also make another stepper motor on port M3 and M4
 //Adafruit_StepperMotor *myNextMotor = AFMS.getStepper(200, 2);
+
+const int
+PWM_A   = 3,
+DIR_A   = 12,
+BRAKE_A = 9,
+SNS_A   = A0;
 
 int sensorPin1 = A1;    // select the input pin for the gyrometer // gyrometer wiper (middle terminal) connected to analog pin 1
 // outside leads to ground and +3.3V
@@ -201,6 +207,14 @@ void displayCalStatus(void)
   }
 */
 void setup() {
+  // Configure the A output
+  pinMode(BRAKE_A, OUTPUT);  // Brake pin on channel A
+  pinMode(DIR_A, OUTPUT);    // Direction pin on channel A
+
+  // Open Serial communication
+  Serial.begin(9600);           // set up Serial library at 9600 bps
+  Serial.println("Motor shield DC motor Test:\n");
+/*
   Serial.begin(9600);           // set up Serial library at 9600 bps
   Serial.println("Adafruit Motorshield v2 - DC Motor test!");
 
@@ -212,7 +226,7 @@ void setup() {
   myMotor->run(FORWARD);
   // turn on motor
   myMotor->run(RELEASE);
-/*
+  
   // Set the speed to start, from 0 (off) to 255 (max speed)
   myOtherMotor->setSpeed(150);
   myOtherMotor->run(FORWARD);
@@ -277,6 +291,46 @@ void setup() {
 unsigned long lastMilli = 0;
 
 void loop() {
+// Set the outputs to run the motor forward
+
+//  digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
+//  digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
+
+//  analogWrite(PWM_A, 255);     // Set the speed of the motor, 255 is the maximum value
+
+//  delay(5000);                 // hold the motor at full speed for 5 seconds
+//  Serial.print("current consumption at full speed: ");
+//  Serial.println(analogRead(SNS_A));
+
+// Brake the motor
+
+//  Serial.println("Start braking\n");
+  // raising the brake pin the motor will stop faster than the stop by inertia
+//  digitalWrite(BRAKE_A, HIGH);  // raise the brake
+//  delay(5000);
+
+// Set the outputs to run the motor backward
+
+//  Serial.println("Backward");
+//  digitalWrite(BRAKE_A, LOW);  // setting againg the brake LOW to disable motor brake
+//  digitalWrite(DIR_A, LOW);    // now change the direction to backward setting LOW the DIR_A pin
+
+//  analogWrite(PWM_A, 255);     // Set the speed of the motor
+
+//  delay(5000);
+//  Serial.print("current consumption backward: ");
+//  Serial.println(analogRead(SNS_A));
+
+  // now stop the motor by inertia, the motor will stop slower than with the brake function
+//  analogWrite(PWM_A, 0);       // turn off power to the motor
+
+//  Serial.print("current brake: ");
+//  Serial.println(analogRead(A0));
+//  Serial.println("End of the motor shield test with DC motors. Thank you!");
+
+
+//  while(1);  
+
   // read the value from the gyrometer sensor:
   sensorValue1 = analogRead(sensorPin1); // - 512;
   Serial.println("From the gyrometer : ");
@@ -414,53 +468,68 @@ void loop() {
   ////////////////////////////////////////////////////////////////////////////////////////////
 
   // Set the speed to start, from 0 (off) to 255 (max speed)
-  myMotor->run(FORWARD);
-  myMotor->setSpeed(191);
+//  myMotor->run(FORWARD);
+//  myMotor->setSpeed(191);
   // turn on motor
 //  myMotor->run(RELEASE);
-/*
+
 #ifdef TRUE
   // here the stab. has been done with the inclinometer
     if (event.orientation.y > 0)
     {
-      myMotor->run(BACKWARD);
-      myMotor->setSpeed(event.orientation.y *2);
-    //    myNextMotor->step(4, FORWARD, MICROSTEP);
+//      myMotor->run(BACKWARD);
+        Serial.println("Backward");
+        digitalWrite(BRAKE_A, LOW);  // setting againg the brake LOW to disable motor brake
+        digitalWrite(DIR_A, LOW);    // now change the direction to backward setting LOW the DIR_A pin
+//      myMotor->setSpeed(event.orientation.y *2);
+        analogWrite(PWM_A, event.orientation.y *2);
+//    myNextMotor->step(4, FORWARD, MICROSTEP);
     }
     else
     {
-      myMotor->run(FORWARD);
-      myMotor->setSpeed(-1 *event.orientation.y *2);
+//      myMotor->run(FORWARD);
+        Serial.println("forward");
+        digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
+        digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
+//      myMotor->setSpeed(-1 *event.orientation.y *2);
+        analogWrite(PWM_A, -1 *event.orientation.y *2);
     //    myNextMotor->step(4, BACKWARD, MICROSTEP);
     }
 
     // here the stab. has been done with the inclinometer
-    if (event.orientation.z > 0)
-    {
-      myOtherMotor->run(BACKWARD);
-      myOtherMotor->setSpeed(event.orientation.z *2);
+//    if (event.orientation.z > 0)
+//    {
+//      myOtherMotor->run(BACKWARD);
+//      myOtherMotor->setSpeed(event.orientation.z *2);
     //    myNextMotor->step(4, FORWARD, MICROSTEP);
-    }
-    else
-    {
-      myOtherMotor->run(FORWARD);
-      myOtherMotor->setSpeed(-1 *event.orientation.z *2);
+//    }
+//    else
+//    {
+//      myOtherMotor->run(FORWARD);
+//      myOtherMotor->setSpeed(-1 *event.orientation.z *2);
     //    myNextMotor->step(4, BACKWARD, MICROSTEP);
     }
 #else
     // here the stab. has been done with the gyrometer
     if (sensorValue1 > 0)
     {
-      myMotor->run(FORWARD);
-      myMotor->setSpeed(sensorValue1);
+//      myMotor->run(FORWARD);
+        Serial.println("forward");
+        digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
+        digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
+//      myMotor->setSpeed(sensorValue1);
+        analogWrite(PWM_A, 255); //sensorValue1);
     }
     else
     {
-      myMotor->run(BACKWARD);
-      myMotor->setSpeed(-1 *sensorValue1);
+//      myMotor->run(BACKWARD);
+        Serial.println("Backward");
+        digitalWrite(BRAKE_A, LOW);  // setting againg the brake LOW to disable motor brake
+        digitalWrite(DIR_A, LOW);    // now change the direction to backward setting LOW the DIR_A pin
+//      myMotor->setSpeed(-1 *sensorValue1);
+        analogWrite(PWM_A, 255); //-1 *sensorValue1);
     }
 #endif
-*/
 //#ifdef TRUE
   /*
     Serial.println("Single coil steps");
