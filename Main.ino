@@ -29,6 +29,12 @@ DIR_A   = 12,
 BRAKE_A = 9,
 SNS_A   = A0;
 
+const int
+PWM_B   = 11,
+DIR_B   = 13,
+BRAKE_B = 8,
+SNS_B   = A1;
+
 int sensorPin1 = A1;    // select the input pin for the gyrometer // gyrometer wiper (middle terminal) connected to analog pin 1
 // outside leads to ground and +3.3V
 int sensorValue1 = 0;   // variable to store the value coming from the sensor
@@ -211,6 +217,10 @@ void setup() {
   pinMode(BRAKE_A, OUTPUT);  // Brake pin on channel A
   pinMode(DIR_A, OUTPUT);    // Direction pin on channel A
 
+  // Configure the B output
+  pinMode(BRAKE_B, OUTPUT);  // Brake pin on channel B
+  pinMode(DIR_B, OUTPUT);    // Direction pin on channel B
+
   // Open Serial communication
   Serial.begin(9600);           // set up Serial library at 9600 bps
   Serial.println("Motor shield DC motor Test:\n");
@@ -332,14 +342,14 @@ void loop() {
 //  while(1);  
 
   // read the value from the gyrometer sensor:
-  sensorValue1 = analogRead(sensorPin1); // - 512;
-  Serial.println("From the gyrometer : ");
-  Serial.print(sensorValue1, DEC);
-  Serial.println("");
+//  sensorValue1 = analogRead(sensorPin1); // - 512;
+//  Serial.println("From the gyrometer : ");
+//  Serial.print(sensorValue1, DEC);
+//  Serial.println("");
   //  scanner.Scan();
 
   // a little delay to not hog Serial Monitor
-  delay(100);
+//  delay(100);
 
   // change the resolution to 12 bits and read A1
   //  analogReadResolution(12);
@@ -354,6 +364,7 @@ void loop() {
   bno.getEvent(&event);
 
   /* Display the floating point data */
+
   Serial.print("X: ");
   Serial.print(event.orientation.x, 4);
   Serial.print("\tY: ");
@@ -396,10 +407,10 @@ void loop() {
   //uint8_t i;
 
   // read the value from the gyrometer sensor:
-  sensorValue1 = analogRead(sensorPin1); // - 512;
-  Serial.println("From the gyrometer : ");
-  Serial.print(sensorValue1, DEC);
-  Serial.println("");
+//  sensorValue1 = analogRead(sensorPin1); // - 512;
+//  Serial.println("From the gyrometer : ");
+//  Serial.print(sensorValue1, DEC);
+//  Serial.println("");
   /*
     // read the value from the inclinometer sensor:
     sensorValue2 = analogRead(sensorPin2);
@@ -473,8 +484,9 @@ void loop() {
   // turn on motor
 //  myMotor->run(RELEASE);
 
-#ifdef TRUE
   // here the stab. has been done with the inclinometer
+//    Serial.print("\n\tY: ");
+//    Serial.print(event.orientation.y, 4);
     if (event.orientation.y > 0)
     {
 //      myMotor->run(BACKWARD);
@@ -482,7 +494,7 @@ void loop() {
         digitalWrite(BRAKE_A, LOW);  // setting againg the brake LOW to disable motor brake
         digitalWrite(DIR_A, LOW);    // now change the direction to backward setting LOW the DIR_A pin
 //      myMotor->setSpeed(event.orientation.y *2);
-        analogWrite(PWM_A, event.orientation.y *2);
+        analogWrite(PWM_A, event.orientation.y *10);
 //    myNextMotor->step(4, FORWARD, MICROSTEP);
     }
     else
@@ -492,10 +504,31 @@ void loop() {
         digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
         digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
 //      myMotor->setSpeed(-1 *event.orientation.y *2);
-        analogWrite(PWM_A, -1 *event.orientation.y *2);
+        analogWrite(PWM_A, -1 *event.orientation.y *10);
     //    myNextMotor->step(4, BACKWARD, MICROSTEP);
     }
 
+    if (event.orientation.z > 0)
+    {
+//      myMotor->run(BACKWARD);
+        Serial.println("Backward");
+        digitalWrite(BRAKE_B, LOW);  // setting againg the brake LOW to disable motor brake
+        digitalWrite(DIR_B, LOW);    // now change the direction to backward setting LOW the DIR_A pin
+//      myMotor->setSpeed(event.orientation.z *2);
+        analogWrite(PWM_B, event.orientation.z *10);
+//    myNextMotor->step(4, FORWARD, MICROSTEP);
+    }
+    else
+    {
+//      myMotor->run(FORWARD);
+        Serial.println("forward");
+        digitalWrite(BRAKE_B, LOW);  // setting brake LOW disable motor brake
+        digitalWrite(DIR_B, HIGH);   // setting direction to HIGH the motor will spin forward
+//      myMotor->setSpeed(-1 *event.orientation.z *2);
+        analogWrite(PWM_B, -1 *event.orientation.z *10);
+    //    myNextMotor->step(4, BACKWARD, MICROSTEP);
+    }
+}
     // here the stab. has been done with the inclinometer
 //    if (event.orientation.z > 0)
 //    {
@@ -508,28 +541,27 @@ void loop() {
 //      myOtherMotor->run(FORWARD);
 //      myOtherMotor->setSpeed(-1 *event.orientation.z *2);
     //    myNextMotor->step(4, BACKWARD, MICROSTEP);
-    }
-#else
+//    }
+
     // here the stab. has been done with the gyrometer
-    if (sensorValue1 > 0)
-    {
+//    if (sensorValue1 > 0)
+//    {
 //      myMotor->run(FORWARD);
-        Serial.println("forward");
-        digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
-        digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
+//        Serial.println("forward");
+//        digitalWrite(BRAKE_A, LOW);  // setting brake LOW disable motor brake
+//        digitalWrite(DIR_A, HIGH);   // setting direction to HIGH the motor will spin forward
 //      myMotor->setSpeed(sensorValue1);
-        analogWrite(PWM_A, 255); //sensorValue1);
-    }
-    else
-    {
+//        analogWrite(PWM_A, 255); //sensorValue1);
+//    }
+//    else
+//    {
 //      myMotor->run(BACKWARD);
-        Serial.println("Backward");
-        digitalWrite(BRAKE_A, LOW);  // setting againg the brake LOW to disable motor brake
-        digitalWrite(DIR_A, LOW);    // now change the direction to backward setting LOW the DIR_A pin
+//        Serial.println("Backward");
+//        digitalWrite(BRAKE_A, LOW);  // setting againg the brake LOW to disable motor brake
+//        digitalWrite(DIR_A, LOW);    // now change the direction to backward setting LOW the DIR_A pin
 //      myMotor->setSpeed(-1 *sensorValue1);
-        analogWrite(PWM_A, 255); //-1 *sensorValue1);
-    }
-#endif
+//        analogWrite(PWM_A, 255); //-1 *sensorValue1);
+//    }
 //#ifdef TRUE
   /*
     Serial.println("Single coil steps");
@@ -578,4 +610,3 @@ void loop() {
     delay(1000);
     //#endif
   */
-}
