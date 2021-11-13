@@ -35,11 +35,11 @@ DIR_B   = 13,
 BRAKE_B = 8,
 SNS_B   = A1;
 
-int sensorPin1 = A1;    // select the input pin for the gyrometer // gyrometer wiper (middle terminal) connected to analog pin 1
+int sensorPin1 = A2;    // select the input pin for the gyrometer // gyrometer wiper (middle terminal) connected to analog pin 1
 // outside leads to ground and +3.3V
 int sensorValue1 = 0;   // variable to store the value coming from the sensor
 /*
-  int sensorPin2 = A1;    // select the input pin for the inclinometer
+  int sensorPin2 = A3;    // select the input pin for the inclinometer
   int sensorValue2 = 0;  // variable to store the value coming from the sensor
 */
 //#include <Wire.h>
