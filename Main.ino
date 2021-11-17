@@ -342,10 +342,10 @@ void loop() {
 //  while(1);  
 
   // read the value from the gyrometer sensor:
-//  sensorValue1 = analogRead(sensorPin1); // - 512;
-//  Serial.println("From the gyrometer : ");
-//  Serial.print(sensorValue1, DEC);
-//  Serial.println("");
+  sensorValue1 = analogRead(sensorPin1); // - 512;
+  Serial.println("From the gyrometer : ");
+  Serial.print(sensorValue1, DEC);
+  Serial.println("");
   //  scanner.Scan();
 
   // a little delay to not hog Serial Monitor
